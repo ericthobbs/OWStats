@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace ProfileImporter
 {
     public class Importer
     {
+        private static ILogger Logger => ApplicationLogging.CreateLogger<Importer>();
 
         private System.Net.Http.HttpClient HttpClient { get; set; }
 
@@ -30,7 +32,7 @@ namespace ProfileImporter
 
             importPath += battleTag + ".html";
 
-
+            Logger.LogInformation(new EventId(ApplicationLogging.ImportEvent), string.Format("Caching profile to {0}", importPath));
 
             if (!System.IO.File.Exists(importPath.Replace('#', '-')))
             {

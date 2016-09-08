@@ -25,6 +25,11 @@ namespace ProfileImporter
             return string.Format("{0}#{1}", Name, Tag);
         }
 
+        /// <summary>
+        /// Parses a BattleNet Tag into its components
+        /// </summary>
+        /// <param name="bnetname">Tag#1234</param>
+        /// <returns>Parsed Battle.Net Tag</returns>
         public static BattleNetProfile ParseTag(string bnetname)
         {
             if (string.IsNullOrEmpty(bnetname))

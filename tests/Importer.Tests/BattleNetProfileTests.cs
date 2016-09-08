@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Importer.Tests
 {
-    public class Tests
+    public class BattleNetProfileTests
     {
         [Theory]
         [InlineData("RavenKnight", "1137")]

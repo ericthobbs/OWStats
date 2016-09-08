@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 namespace ProfileImporter
 {
@@ -12,5 +8,6 @@ namespace ProfileImporter
         public static ILogger CreateLogger<T>() => LoggerFactory.CreateLogger<T>();
 
         public const int SettingsEvent = 1000;
+        public const int ImportEvent = 2000;
     }
 }

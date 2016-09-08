@@ -13,6 +13,10 @@ namespace ProfileImporter
 
         static SettingsManager()
         {
+            ApplicationSettings.SaveLocation = string.Empty;
+            ApplicationSettings.ServerPath = string.Empty;
+            ApplicationSettings.UserAgent = string.Empty;
+
             LoadGlobalSettings();
         }
 
