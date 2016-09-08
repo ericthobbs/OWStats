@@ -40,6 +40,10 @@ namespace ProfileImporter
 
                 System.IO.File.WriteAllText(importPath.Replace('#', '-'), data);
             }
+            else
+            {
+                Logger.LogInformation(new EventId(ApplicationLogging.ImportEvent), "Skipping profile import - already cached.");
+            }
 
             return true;
         }

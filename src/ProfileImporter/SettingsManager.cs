@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -13,9 +14,13 @@ namespace ProfileImporter
 
         static SettingsManager()
         {
-            ApplicationSettings.SaveLocation = string.Empty;
-            ApplicationSettings.ServerPath = string.Empty;
-            ApplicationSettings.UserAgent = string.Empty;
+            ApplicationSettings = new ApplicationSettings
+            {
+                SaveLocation = string.Empty,
+                ServerPath = string.Empty,
+                UserAgent = string.Empty,
+                Profiles = new List<string>()
+            };
 
             LoadGlobalSettings();
         }
