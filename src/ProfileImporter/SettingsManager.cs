@@ -22,6 +22,10 @@ namespace ProfileImporter
             {
                 ApplicationSettings =
                     JsonConvert.DeserializeObject<ApplicationSettings>(File.ReadAllText("settings.json"));
+
+                ApplicationSettings.SaveLocation = Environment.ExpandEnvironmentVariables(ApplicationSettings.SaveLocation);
+                ApplicationSettings.ServerPath = Environment.ExpandEnvironmentVariables(ApplicationSettings.ServerPath);
+                ApplicationSettings.UserAgent = Environment.ExpandEnvironmentVariables(ApplicationSettings.UserAgent);
             }
             catch (Exception ex)
             {

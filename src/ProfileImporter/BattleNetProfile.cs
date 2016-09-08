@@ -32,7 +32,7 @@ namespace ProfileImporter
                 throw new ArgumentNullException(nameof(bnetname));
             }
 
-            var parts = bnetname.Split(new char[] {'#', '-'}, StringSplitOptions.RemoveEmptyEntries);
+            var parts = bnetname.Split(new char[] {'#', '-', '_'}, StringSplitOptions.RemoveEmptyEntries);
 
             if(parts.Length != 2)
                 throw new ArgumentException(nameof(bnetname));
