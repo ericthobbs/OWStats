@@ -12,16 +12,20 @@
     "HtmlAgilityPack.NetCore": "1.5.0.1",
     "Newtonsoft.Json": "9.0.1",
     "Microsoft.Extensions.Logging": "1.0.0",
-    "Microsoft.Extensions.Logging.Console": "1.0.0"
+    "Microsoft.Extensions.Logging.Console": "1.0.0",
+    "Common": {
+      "version": "*",
+      "target": "project"
+    }
   },
   "content": ["settings.json"],
 
   "frameworks": {
     "netcoreapp1.0": {
       "imports": "dnxcore50"
-    },
+    }
   },
   "runtimes": {
-    "win7-x64": {}
+    "win10-x64": {}
   }
 }

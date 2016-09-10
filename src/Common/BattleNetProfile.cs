@@ -1,14 +1,14 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 
-namespace ProfileImporter
+namespace Common
 {
     /// <summary>
     /// Battle.Net Profile
     /// </summary>
     public class BattleNetProfile
     {
-        private static ILogger Logger => ApplicationLogging.CreateLogger<BattleNetProfile>();
+        private static ILogger Logger => Common.ApplicationLogging.CreateLogger<BattleNetProfile>();
 
         /// <summary>
         /// Friendly name

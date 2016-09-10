@@ -1,5 +1,5 @@
 ﻿using System;
-using ProfileImporter;
+using Common;
 using Xunit;
 
 namespace Importer.Tests

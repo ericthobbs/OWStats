@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Common;
+using Common.Overwatch;
 
 namespace ProfileImporter
 {
@@ -19,6 +21,26 @@ namespace ProfileImporter
             HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(SettingsManager.ApplicationSettings.UserAgent);
         }
 
+        public async Task<Common.Overwatch.PlayerSnapshot> FetchPlayerSnapshotAsync(BattleNetProfile player)
+        {
+            Logger.LogDebug("Getting profile {0} from server {1}", player, HttpClient.BaseAddress);
+            var response = await HttpClient.GetAsync(player.ToString());
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Logger.LogError(new EventId(ApplicationLogging.ImportEvent), 
+                    "Failed to capture profile. Error: " + response.StatusCode + ": " + response.ReasonPhrase);
+                return null;
+            }
+
+            return new PlayerSnapshot(await response.Content.ReadAsStringAsync());
+        }
+
+        /// <summary>
+        /// Debug Method.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<bool> ImportProfileAsync(string name)
         {
             //normalize name

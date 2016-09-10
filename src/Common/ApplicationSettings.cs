@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ProfileImporter
+namespace Common
 {
     public class ApplicationSettings
     {

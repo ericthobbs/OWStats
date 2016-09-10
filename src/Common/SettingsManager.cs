@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace ProfileImporter
+namespace Common
 {
     public class SettingsManager
     {
