@@ -9,7 +9,7 @@ namespace Common.Overwatch.HeroComparison
     [BlizzardGuid("overwatch.guid.0x0860000000000039")]
     public class HeroGamesWon : HeroBaseCompare
     {
-        HeroGamesWon(string charactername, string length, string characterporturl)
+        public HeroGamesWon(string charactername, string length, string characterporturl)
             : base(charactername, length, characterporturl) { }
     }
 }

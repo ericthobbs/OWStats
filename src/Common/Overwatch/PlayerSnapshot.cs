@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Common.Attributes;
+using Common.Overwatch.HeroComparison;
 using Microsoft.Extensions.Logging;
 
 namespace Common.Overwatch
@@ -13,6 +14,9 @@ namespace Common.Overwatch
         public int GamesWon { get; private set; }
         public Uri PlayerIcon { get; private set; }
 
+        //Temp Data Structure
+        public List<HeroBaseCompare> HeroComparison { get; private set; }
+
         public string RawHtml { get; private set; }
 
         private static ILogger Logger => Common.ApplicationLogging.CreateLogger<PlayerSnapshot>();
@@ -21,6 +25,7 @@ namespace Common.Overwatch
 
         public PlayerSnapshot(string html)
         {
+            HeroComparison = new List<HeroBaseCompare>();
             RawHtml = html;
         }
 
@@ -41,11 +46,11 @@ namespace Common.Overwatch
             //Demo - this needs to be moved into its own method that can be used for both qp and cm modes.
             foreach (var type in compareTypesQp)
             {
-                var heroCompareType = GetTypeWithGuid(this.GetType().GetTypeInfo().Assembly, type.Item2);
+                
 
-                var instance = Activator.CreateInstance(heroCompareType, "Phara", "123", "http://localhost/web123.png");
-                
-                
+                var heros = EnumerateHeroStatsOfType(quickPlayNode, type.Item2);
+
+                HeroComparison.AddRange(heros);
 
                 int a = 0;
             }
@@ -54,6 +59,29 @@ namespace Common.Overwatch
             var compareTypesCm = EnumerateHeroComparisonTypes(competitiveNode);
 
             return true;
+        }
+
+        private List<HeroBaseCompare> EnumerateHeroStatsOfType(HtmlAgilityPack.HtmlNode rootNode, string blizzardTypeGuid)
+        {
+            var data = new List<HeroBaseCompare>();
+            var heroCompareType = GetTypeWithGuid(this.GetType().GetTypeInfo().Assembly, blizzardTypeGuid);
+
+            var nodes = rootNode.SelectNodes($"//div[@data-category-id='{blizzardTypeGuid}']");
+
+            foreach (var n in nodes)
+            {
+                var heroImgNode = n.SelectSingleNode("//img");
+                var heroDataNode = n.SelectSingleNode("//div[@class='bar-text']");
+
+                var heroImageUrl = heroImgNode.GetAttributeValue("src", string.Empty);
+                var heroName = heroDataNode.SelectSingleNode("//div[@class='title']").InnerText;
+                var heroValue = heroDataNode.SelectSingleNode("//div[@class='description']").InnerText;
+
+                var instance = Activator.CreateInstance(heroCompareType, heroName, heroValue, heroImageUrl);
+
+                data.Add((HeroBaseCompare)instance);
+            }
+            return data;
         }
 
         private List<Tuple<string,string>> EnumerateHeroComparisonTypes(HtmlAgilityPack.HtmlNode rootNode)
