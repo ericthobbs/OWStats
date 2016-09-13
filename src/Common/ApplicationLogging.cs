@@ -9,5 +9,8 @@ namespace Common
 
         public const int SettingsEvent = 1000;
         public const int ImportEvent = 2000;
+
+        // 3000 level errors are errors that occur during Html Parsing
+        public const int SnapShowParseError = 3001;
     }
 }

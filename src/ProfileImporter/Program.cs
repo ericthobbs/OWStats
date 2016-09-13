@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.IO;
 using Common;
+using Common.Overwatch;
 using Microsoft.Extensions.Logging;
 
 namespace ProfileImporter
@@ -9,16 +10,37 @@ namespace ProfileImporter
     {
         public static void Main(string[] args)
         {
-            Common.ApplicationLogging.LoggerFactory.AddConsole();
+            ApplicationLogging.LoggerFactory.AddConsole();
+            var logger = ApplicationLogging.CreateLogger<Program>();
 
             var importer = new Importer(SettingsManager.ApplicationSettings.ServerPath);
 
             foreach (var p in SettingsManager.ApplicationSettings.Profiles)
             {
                 Console.WriteLine("Fetching profile " + p);
-                var task = importer.ImportProfileAsync(p);
+                var task = importer.ImportAndSaveProfileToCacheAsync(p);
                 task.Wait();
             }
+
+            var dateDirs = Directory.GetDirectories(SettingsManager.ApplicationSettings.SaveLocation);
+            foreach (var dir in dateDirs)
+            {
+                var date = new DateTime(Convert.ToInt64(Path.GetFileName(dir)));
+
+                foreach (var p in SettingsManager.ApplicationSettings.Profiles)
+                {
+                    var filename = dir + Path.DirectorySeparatorChar + p.Replace('#', '-') + ".html";
+                    if (File.Exists(filename))
+                    {
+                        var snapshot = new PlayerSnapshot(File.ReadAllText(filename));
+                        snapshot.ParseHtml();
+                        logger.LogInformation(new EventId(ApplicationLogging.ImportEvent), "{0} has won {1} games as of {2}", p, snapshot.GamesWon, date.ToString("D"));
+                        logger.LogInformation(snapshot.PlayerIcon.ToString());
+                    }
+
+                }
+            }
+
             Console.WriteLine("Completed fetching profiles.");
         }
     }

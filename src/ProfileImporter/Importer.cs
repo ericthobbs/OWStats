@@ -41,7 +41,7 @@ namespace ProfileImporter
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<bool> ImportProfileAsync(string name)
+        public async Task<bool> ImportAndSaveProfileToCacheAsync(string name)
         {
             //normalize name
             var battleTag = BattleNetProfile.ParseTag(name);
