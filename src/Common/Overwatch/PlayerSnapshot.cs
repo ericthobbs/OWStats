@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+using System.Linq;
+using System.Reflection;
+using Common.Attributes;
 using Microsoft.Extensions.Logging;
 
 namespace Common.Overwatch
@@ -14,7 +15,7 @@ namespace Common.Overwatch
 
         public string RawHtml { get; private set; }
 
-        private static ILogger Logger => Common.ApplicationLogging.CreateLogger<BattleNetProfile>();
+        private static ILogger Logger => Common.ApplicationLogging.CreateLogger<PlayerSnapshot>();
 
         private HtmlAgilityPack.HtmlDocument Document { get; set; }
 
@@ -35,8 +36,22 @@ namespace Common.Overwatch
             GetGamesWon();
             GetPlayerIconUrl();
 
-            var compareTypesQP = EnumerateHeroComparisonTypes(quickPlayNode);
-            var compareTypesCM = EnumerateHeroComparisonTypes(competitiveNode);
+            var compareTypesQp = EnumerateHeroComparisonTypes(quickPlayNode);
+
+            //Demo - this needs to be moved into its own method that can be used for both qp and cm modes.
+            foreach (var type in compareTypesQp)
+            {
+                var heroCompareType = GetTypeWithGuid(this.GetType().GetTypeInfo().Assembly, type.Item2);
+
+                var instance = Activator.CreateInstance(heroCompareType, "Phara", "123", "http://localhost/web123.png");
+                
+                
+
+                int a = 0;
+            }
+
+            //....see note above
+            var compareTypesCm = EnumerateHeroComparisonTypes(competitiveNode);
 
             return true;
         }
@@ -64,7 +79,7 @@ namespace Common.Overwatch
         private void GetPlayerIconUrl()
         {
             try
-            {wd
+            {
                 var imgTag = Document.DocumentNode.SelectSingleNode("//img[@class='player-portrait']");
                 var url = imgTag.GetAttributeValue("src", string.Empty);
                 if (!string.IsNullOrEmpty(url))
@@ -99,6 +114,24 @@ namespace Common.Overwatch
             {
                 Logger.LogError(new EventId(ApplicationLogging.SnapShowParseError), "Failed to parse games won count.");
             }
+        }
+
+        //Hacky
+        static Type GetTypeWithGuid(Assembly assembly, string blizzardguid)
+        {
+            foreach (Type type in assembly.GetTypes())
+            {
+                foreach (var item in type.GetTypeInfo().GetCustomAttributes(typeof (BlizzardGuidAttribute), true))
+                {
+                    if (item is BlizzardGuidAttribute)
+                    {
+                        if ((item as BlizzardGuidAttribute).BlizzardGuid == blizzardguid)
+                            return type;
+                    }
+                }
+            }
+            Logger.LogError("Failed to locate requested type {0}", blizzardguid);
+            return null;
         }
     }
 }

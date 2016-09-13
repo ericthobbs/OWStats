@@ -18,9 +18,18 @@ namespace ProfileImporter
             foreach (var p in SettingsManager.ApplicationSettings.Profiles)
             {
                 Console.WriteLine("Fetching profile " + p);
-                var task = importer.ImportAndSaveProfileToCacheAsync(p);
-                task.Wait();
+                try
+                {
+                    var task = importer.ImportAndSaveProfileToCacheAsync(p);
+                    task.Wait();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(new EventId(ApplicationLogging.ImportEvent), string.Format("Failed to import profile {0}. Error: {1}", p, ex.Message));
+                }
             }
+
+            // Debug / code can be remove for production...
 
             var dateDirs = Directory.GetDirectories(SettingsManager.ApplicationSettings.SaveLocation);
             foreach (var dir in dateDirs)

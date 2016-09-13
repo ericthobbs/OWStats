@@ -1,7 +1,9 @@
 ﻿using System;
+using Common.Attributes;
 
 namespace Common.Overwatch.HeroComparison
 {
+    [BlizzardGuid("overwatch.guid.0x0860000000000021")]
     public class HeroPlaytime : HeroBaseCompare
     {
         public HeroPlaytime(string charactername, string length, string characterporturl) 
