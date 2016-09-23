@@ -19,6 +19,9 @@ namespace Common
                 SaveLocation = string.Empty,
                 ServerPath = string.Empty,
                 UserAgent = string.Empty,
+                MinCacheTime = 60*12,
+                MaxScrapperThreads = 1,
+                DbConnection = string.Empty,
                 Profiles = new List<string>()
             };
 
@@ -35,6 +38,7 @@ namespace Common
                 ApplicationSettings.SaveLocation = Environment.ExpandEnvironmentVariables(ApplicationSettings.SaveLocation);
                 ApplicationSettings.ServerPath = Environment.ExpandEnvironmentVariables(ApplicationSettings.ServerPath);
                 ApplicationSettings.UserAgent = Environment.ExpandEnvironmentVariables(ApplicationSettings.UserAgent);
+                ApplicationSettings.DbConnection = Environment.ExpandEnvironmentVariables(ApplicationSettings.DbConnection);
             }
             catch (Exception ex)
             {

@@ -7,7 +7,7 @@ using Common.Attributes;
 namespace Common.Overwatch.HeroComparison
 {
     [BlizzardGuid("overwatch.guid.0x08600000000003D1")]
-    public class HeroWinPercentage : HeroBaseCompare
+    public class HeroWinPercentage : HeroCompareBase
     {
         public HeroWinPercentage(string charactername, string length, string characterporturl)
             : base(charactername, length, characterporturl) { }

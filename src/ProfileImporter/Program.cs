@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Common;
 using Common.Overwatch;
 using Microsoft.Extensions.Logging;
@@ -15,19 +16,22 @@ namespace ProfileImporter
 
             var importer = new Importer(SettingsManager.ApplicationSettings.ServerPath);
 
-            foreach (var p in SettingsManager.ApplicationSettings.Profiles)
-            {
-                Console.WriteLine("Fetching profile " + p);
-                try
+            var f = Parallel.ForEach(
+                SettingsManager.ApplicationSettings.Profiles, 
+                new ParallelOptions { MaxDegreeOfParallelism = SettingsManager.ApplicationSettings.MaxScrapperThreads} , 
+                (s, state, arg3) =>
                 {
-                    var task = importer.ImportAndSaveProfileToCacheAsync(p);
-                    task.Wait();
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(new EventId(ApplicationLogging.ImportEvent), string.Format("Failed to import profile {0}. Error: {1}", p, ex.Message));
-                }
-            }
+                    Console.WriteLine("Fetching profile " + s);
+                    try
+                    {
+                        var task = importer.ImportAndSaveProfileToCacheAsync(BattleNetProfile.ParseTag(s));
+                        task.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(new EventId(ApplicationLogging.ImportEvent), string.Format("Failed to import profile {0}. Error: {1}", s, ex.Message));
+                    }
+                });
 
             // Debug / code can be remove for production...
 

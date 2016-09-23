@@ -15,7 +15,7 @@ namespace Common.Overwatch
         public Uri PlayerIcon { get; private set; }
 
         //Temp Data Structure
-        public List<HeroBaseCompare> HeroComparison { get; private set; }
+        public List<HeroCompareBase> HeroComparison { get; private set; }
 
         public string RawHtml { get; private set; }
 
@@ -25,7 +25,7 @@ namespace Common.Overwatch
 
         public PlayerSnapshot(string html)
         {
-            HeroComparison = new List<HeroBaseCompare>();
+            HeroComparison = new List<HeroCompareBase>();
             RawHtml = html;
         }
 
@@ -61,25 +61,25 @@ namespace Common.Overwatch
             return true;
         }
 
-        private List<HeroBaseCompare> EnumerateHeroStatsOfType(HtmlAgilityPack.HtmlNode rootNode, string blizzardTypeGuid)
+        private List<HeroCompareBase> EnumerateHeroStatsOfType(HtmlAgilityPack.HtmlNode rootNode, string blizzardTypeGuid)
         {
-            var data = new List<HeroBaseCompare>();
+            var data = new List<HeroCompareBase>();
             var heroCompareType = GetTypeWithGuid(this.GetType().GetTypeInfo().Assembly, blizzardTypeGuid);
 
-            var nodes = rootNode.SelectNodes($"//div[@data-category-id='{blizzardTypeGuid}']");
+            var nodes = rootNode.SelectNodes($".//div[@data-category-id='{blizzardTypeGuid}']");
 
             foreach (var n in nodes)
             {
-                var heroImgNode = n.SelectSingleNode("//img");
-                var heroDataNode = n.SelectSingleNode("//div[@class='bar-text']");
+                var heroImgNode = n.SelectSingleNode(".//img");
+                var heroDataNode = n.SelectSingleNode(".//div[@class='bar-text']");
 
                 var heroImageUrl = heroImgNode.GetAttributeValue("src", string.Empty);
-                var heroName = heroDataNode.SelectSingleNode("//div[@class='title']").InnerText;
-                var heroValue = heroDataNode.SelectSingleNode("//div[@class='description']").InnerText;
+                var heroName = heroDataNode.SelectSingleNode(".//div[@class='title']").InnerText;
+                var heroValue = heroDataNode.SelectSingleNode(".//div[@class='description']").InnerText;
 
                 var instance = Activator.CreateInstance(heroCompareType, heroName, heroValue, heroImageUrl);
 
-                data.Add((HeroBaseCompare)instance);
+                data.Add((HeroCompareBase)instance);
             }
             return data;
         }
@@ -88,7 +88,7 @@ namespace Common.Overwatch
         {
             var types = new List<Tuple<string,string>>();
 
-            var selectNode = rootNode.SelectSingleNode("//select[@data-group-id='comparisons']");
+            var selectNode = rootNode.SelectSingleNode(".//select[@data-group-id='comparisons']");
 
             foreach (var optionNode in selectNode.ChildNodes)
             {
@@ -108,7 +108,7 @@ namespace Common.Overwatch
         {
             try
             {
-                var imgTag = Document.DocumentNode.SelectSingleNode("//img[@class='player-portrait']");
+                var imgTag = Document.DocumentNode.SelectSingleNode(".//img[@class='player-portrait']");
                 var url = imgTag.GetAttributeValue("src", string.Empty);
                 if (!string.IsNullOrEmpty(url))
                 {
@@ -126,7 +126,7 @@ namespace Common.Overwatch
         {
             try
             {
-                var header = Document.DocumentNode.SelectSingleNode("//div[@class='masthead']");
+                var header = Document.DocumentNode.SelectSingleNode(".//div[@class='masthead']");
                 var searchSpans = header.SelectNodes("//span");
                 foreach (var span in searchSpans)
                 {
